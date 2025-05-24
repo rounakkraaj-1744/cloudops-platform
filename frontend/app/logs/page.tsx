@@ -3,7 +3,7 @@ import { LogsDashboard } from "@/components/logs-dashboard"
 
 export default function LogsPage() {
   return (
-    <DashboardLayout children={undefined}>
+    <DashboardLayout>
       <LogsDashboard />
     </DashboardLayout>
   )

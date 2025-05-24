@@ -36,7 +36,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       <ShadcnSidebar className="border-r border-border/50 bg-card/95 backdrop-blur-md">
         <SidebarHeader className="flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary">
               <Server className="h-5 w-5" />
             </div>
             <span className={cn("text-lg font-semibold transition-all", !isOpen && "opacity-0 translate-x-4")}>
