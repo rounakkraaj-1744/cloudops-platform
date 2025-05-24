@@ -3,7 +3,7 @@ import { DashboardLayout } from "@/components/dashboard-layout"
 
 export default function CiCdPage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout children={undefined}>
       <CiCdDashboard/>
     </DashboardLayout>
   )

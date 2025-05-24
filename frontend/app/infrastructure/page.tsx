@@ -3,7 +3,7 @@ import { InfrastructureDashboard } from "@/components/infrastructure-dashboard"
 
 export default function InfrastructurePage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout children={undefined}>
       <InfrastructureDashboard />
     </DashboardLayout>
   )

@@ -3,7 +3,7 @@ import { MonitoringDashboard } from "@/components/monitoring-dashboard"
 
 export default function MonitoringPage() {
   return (
-    <DashboardLayout>
+    <DashboardLayout children={undefined}>
       <MonitoringDashboard />
     </DashboardLayout>
   )

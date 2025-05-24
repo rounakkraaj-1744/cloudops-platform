@@ -189,7 +189,7 @@ function getStatusIcon(status: string) {
 
 export function CiCdDashboard() {
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">CI/CD Pipeline</h1>
         <div className="flex items-center space-x-2">
