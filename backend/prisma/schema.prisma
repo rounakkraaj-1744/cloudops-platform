@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String?
+  name          String?
+  avatar        String?
+  role          Role      @default(USER)
+  isActive      Boolean   @default(true)
+  emailVerified Boolean   @default(false)
+  provider      Provider? 
+  providerId    String?   
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  projects      Project[]
+  deployments   Deployment[]
+  settings      Settings?
+
+  @@map("users")
+}
+
+model Project {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  repository  String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deployments Deployment[]
+  resources   Resource[]
+
+  @@map("projects")
+}
+
+model Deployment {
+  id          String    @id @default(uuid())
+  version     String
+  status      Status    @default(PENDING)
+  environment String
+  logs        String?
+  startedAt   DateTime  @default(now())
+  finishedAt  DateTime?
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("deployments")
+}
+
+model Resource {
+  id          String       @id @default(uuid())
+  name        String
+  type        ResourceType
+  status      Status       @default(PENDING)
+  region      String?
+  details     Json?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  projectId   String
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("resources")
+}
+
+model Settings {
+  id                String   @id @default(uuid())
+  theme             String   @default("system")
+  notifications     Boolean  @default(true)
+  emailNotifications Boolean  @default(true)
+  language          String   @default("en")
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("settings")
+}
+
+model LogEntry {
+  id        String    @id @default(uuid())
+  level     LogLevel
+  message   String
+  source    String
+  timestamp DateTime  @default(now())
+  metadata  Json?
+
+  @@map("logs")
+}
+
+enum Role {
+  ADMIN
+  USER
+  VIEWER
+}
+
+enum Provider {
+  LOCAL
+  GOOGLE
+  GITHUB
+}
+
+enum Status {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+enum ResourceType {
+  INSTANCE
+  DATABASE
+  STORAGE
+  NETWORK
+  KUBERNETES
+}
+
+enum LogLevel {
+  INFO
+  WARNING
+  ERROR
+  DEBUG
+}
