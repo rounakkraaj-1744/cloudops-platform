@@ -206,7 +206,7 @@ cloudops-platform/
 
 #### 1. Clone & Initialize
 ```bash
-git clone https://github.com/your-org/cloudops-platform.git
+git clone https://github.com/rounakkraaj-1744/cloudops-platform.git
 cd cloudops-platform
 ```
 
