@@ -13,15 +13,35 @@ output "public_subnets" {
   value       = module.vpc.public_subnets
 }
 
+output "eks_cluster_id" {
+  description = "EKS cluster ID"
+  value       = module.eks.cluster_id
+}
+
+output "eks_cluster_arn" {
+  description = "EKS cluster ARN"
+  value       = module.eks.cluster_arn
+}
+
+output "eks_cluster_endpoint" {
+  description = "Endpoint for EKS control plane"
+  value       = module.eks.cluster_endpoint
+}
+
+output "eks_cluster_security_group_id" {
+  description = "Security group ids attached to the cluster control plane"
+  value       = module.eks.cluster_security_group_id
+}
+
 output "database_endpoint" {
   description = "RDS instance endpoint"
   value       = aws_db_instance.postgres.endpoint
   sensitive   = true
 }
 
-output "load_balancer_dns" {
-  description = "DNS name of the load balancer"
-  value       = aws_lb.main.dns_name
+output "database_port" {
+  description = "RDS instance port"
+  value       = aws_db_instance.postgres.port
 }
 
 output "s3_bucket_name" {
@@ -29,7 +49,17 @@ output "s3_bucket_name" {
   value       = aws_s3_bucket.assets.bucket
 }
 
-output "ecs_cluster_name" {
-  description = "Name of the ECS cluster"
-  value       = aws_ecs_cluster.main.name
+output "cloudwatch_log_group_name" {
+  description = "Name of the CloudWatch log group"
+  value       = aws_cloudwatch_log_group.app.name
+}
+
+output "route53_zone_id" {
+  description = "Route53 zone ID"
+  value       = var.create_route53_zone ? aws_route53_zone.main[0].zone_id : null
+}
+
+output "acm_certificate_arn" {
+  description = "ACM certificate ARN"
+  value       = var.create_route53_zone ? aws_acm_certificate.main[0].arn : null
 }
