@@ -216,8 +216,8 @@ export class MonitoringService {
   }
 
   private generateTimeLabels(timeRange: string): string[] {
-    const labels = []
-    let count = 12 // Default number of points
+    const labels: string[] = []
+    let count = 12 
 
     switch (timeRange) {
       case "1h":

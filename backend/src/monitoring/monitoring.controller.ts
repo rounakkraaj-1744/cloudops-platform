@@ -1,14 +1,11 @@
 import { Controller, Get, UseGuards, Query } from "@nestjs/common"
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from "@nestjs/swagger"
 import type { MonitoringService } from "./monitoring.service"
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
 import { GetUser } from "../users/decorators/get-user.decorator"
 import type { User } from "@prisma/client"
 
-@ApiTags("monitoring")
 @Controller("monitoring")
 @UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
 export class MonitoringController {
   constructor(private readonly monitoringService: MonitoringService) {}
 
