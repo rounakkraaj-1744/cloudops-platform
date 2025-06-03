@@ -1,0 +1,87 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy-staging:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.0'
+    
+    - name: Setup Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: '3.12.0'
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region us-east-1 --name cloudops-staging
+    
+    - name: Deploy to staging
+      run: |
+        helm upgrade --install cloudops-staging ./infra/helm/cloudops \
+          --namespace cloudops-staging \
+          --create-namespace \
+          --set image.tag=${{ github.sha }} \
+          --set environment=staging \
+          --values ./infra/helm/cloudops/values-staging.yaml
+
+  deploy-production:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.0'
+    
+    - name: Setup Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: '3.12.0'
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region us-east-1 --name cloudops-production
+    
+    - name: Deploy to production
+      run: |
+        helm upgrade --install cloudops-production ./infra/helm/cloudops \
+          --namespace cloudops-production \
+          --create-namespace \
+          --set image.tag=${{ github.ref_name }} \
+          --set environment=production \
+          --values ./infra/helm/cloudops/values-production.yaml
